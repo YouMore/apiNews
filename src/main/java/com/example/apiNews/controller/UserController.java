@@ -1,51 +1,39 @@
 package com.example.apiNews.controller;
 
-import com.example.apiNews.dto.request.UserDTO;
+import com.example.apiNews.config.security.UserPrincipal;
+import com.example.apiNews.model.entity.News;
 import com.example.apiNews.model.entity.Users;
+import com.example.apiNews.model.request.CreateNewsRequest;
 import com.example.apiNews.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-//    @PostMapping
-//    public ResponseEntity<Users> create(@RequestBody UserDTO userDTO){
-//        return new ResponseEntity<>(userService.create(userDTO), HttpStatus.CREATED);
-//    }
-
-    @GetMapping
-    public ResponseEntity<List<Users>> readAll(){
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    private final ModelMapper modelMapper;
+    @GetMapping("/news")
+    public ResponseEntity<List<News>> getAllNews(@AuthenticationPrincipal UserPrincipal principal){
+        return ResponseEntity.ok(userService.getUserById(principal.getUserId()).getNews());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Users> read(@PathVariable Long id){
-        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
-    }
-
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Users> update(@PathVariable Long id, @RequestBody UserDTO userDTO){
-//        return new ResponseEntity<>(userService.updateUser(id, userDTO), HttpStatus.OK);
-//    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Users> update(@PathVariable Long id, @RequestBody UserDTO userDTO){
-        return new ResponseEntity<>(userService.updateUserById(id, userDTO), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public HttpStatus delete(@PathVariable Long id){
-        userService.deleteUserById(id);
-        return HttpStatus.NO_CONTENT;
+    @PostMapping("/news/create")
+    public ResponseEntity<News> createNews(@RequestBody CreateNewsRequest request,
+                                           @AuthenticationPrincipal UserPrincipal principal){
+        News news = modelMapper.map(request, News.class);
+        news.setUser(userService.getUserById(principal.getUserId()));
+        Users user = userService.getUserById(principal.getUserId());
+        user.setNews(List.of(news));
+        userService.updateUser(user);
+        return ResponseEntity.created(news);
     }
 
 }
