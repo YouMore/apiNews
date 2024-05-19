@@ -34,4 +34,13 @@ public class NewsService {
     public void delete(Long id){
         newsRepository.deleteById(id);
     }
+
+    public News updateModerationStatus(Long id, Boolean isModerated) {
+        News news = newsRepository.findById(id).orElse(null);
+        if (news != null) {
+            news.setIsModerated(isModerated);
+            newsRepository.save(news);
+        }
+        return news;
+    }
 }

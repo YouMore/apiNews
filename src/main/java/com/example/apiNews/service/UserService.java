@@ -1,41 +1,27 @@
 package com.example.apiNews.service;
 
 import com.example.apiNews.dto.request.UserDTO;
-import com.example.apiNews.model.entity.News;
 import com.example.apiNews.model.entity.Users;
 import com.example.apiNews.model.entity.enums.UserRole;
+import com.example.apiNews.repository.NewsRepository;
 import com.example.apiNews.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-//    private static final String EXISTING_LOGIN = "youmore";
-
-//    public Optional<Users> findByLogin(String login){
-//        if (EXISTING_LOGIN.equalsIgnoreCase(login)) return Optional.empty();
-//
-//        var user = new Users();
-//        user.setId(1L);
-//        user.setLogin(EXISTING_LOGIN);
-//        user.setPassword("$2a$12$0Zy1kQnAGIINFS78ZlQQbuRlHs/0feyjvzuDOQFXbKKz/45YEJpPS");
-//        user.setRole(UserRole.ROLE_GUEST);
-//        user.setNews(new ArrayList<>());
-//        return Optional.of(user);
-//    }
-//
     private final UserRepository userRepository;
+    private final NewsRepository newsRepository;
 //
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+
 //
 //    public Users create(Users user) {
 //        System.out.println("Создан пользователь");
@@ -51,7 +37,7 @@ public class UserService {
     }
 
     public Users getUserById(long id) {
-        return userRepository.getById(id);
+        return userRepository.findById(id).orElse(null);
     }
 
     public Users getUserByLogin(String login) {
@@ -76,6 +62,10 @@ public class UserService {
 
     @Transactional
     public void deleteUserById(long userId) {
+        // Удаление связанных новостей
+        newsRepository.deleteByUserId(userId);
+
+        // Удаление пользователя
         userRepository.deleteById(userId);
     }
 }

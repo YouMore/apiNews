@@ -5,6 +5,7 @@ import com.example.apiNews.model.request.ChangeUserRole;
 import com.example.apiNews.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +30,10 @@ public class AdminController {
         return ResponseEntity.ok(userService.updateUser(user));
     }
 
-    @DeleteMapping("delete/user/{id}")
+    @DeleteMapping("/delete/user/{id}")
     public ResponseEntity deleteUser(@PathVariable long id){
         userService.deleteUserById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 }

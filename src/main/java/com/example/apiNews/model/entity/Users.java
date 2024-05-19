@@ -2,6 +2,7 @@ package com.example.apiNews.model.entity;
 
 import com.example.apiNews.model.entity.enums.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,8 +34,9 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(mappedBy = "user")
     @Builder.Default
+    @JsonManagedReference
     private List<News> news = new ArrayList<>();
 
     @Override

@@ -34,18 +34,23 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Users> readById(@PathVariable Long id){
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    }
 
-//    @PostMapping("/news/create")
-//    public ResponseEntity<News> createNews(@RequestBody CreateNewsRequest request,
-//                                           @AuthenticationPrincipal UserPrincipal principal) {
-//        News news = modelMapper.map(request, News.class);
-//        Users user = userService.getUserById(principal.getUserId());
-//        // Устанавливаем связь между новостью и пользователем
-//        news.setUser(user);
-//        user.getNews().add(news);
-//        // Сохраняем пользователя и новость в базе данных
-//        userService.updateUser(user);
-//        return ResponseEntity.ok(newsService.create(news));
-//    }
+
+    @PostMapping("/news/create")
+    public ResponseEntity<News> createNews(@RequestBody CreateNewsRequest request,
+                                           @AuthenticationPrincipal UserPrincipal principal) {
+        News news = modelMapper.map(request, News.class);
+        Users user = userService.getUserById(principal.getUserId());
+        // Устанавливаем связь между новостью и пользователем
+        news.setUser(user);
+        user.getNews().add(news);
+        // Сохраняем пользователя и новость в базе данных
+        userService.updateUser(user);
+        return ResponseEntity.ok(newsService.create(news));
+    }
 
 }

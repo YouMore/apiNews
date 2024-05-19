@@ -38,8 +38,9 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .securityMatcher("/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/moderator/**").hasAnyRole("MODERATOR", "ADMIN")
                         .anyRequest().authenticated());
         return http.build();
     }

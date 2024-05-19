@@ -1,6 +1,7 @@
 package com.example.apiNews.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,5 +41,6 @@ public class News {
 
     @ManyToOne(cascade =  CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private Users user;
 }
