@@ -43,7 +43,7 @@ RUN ./gradlew build -x test
 
 # Настройте вторую стадию сборки для более легкого образа
 FROM openjdk:17-jdk-slim
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY ./apiNews-0.0.1-SNAPSHOT.jar app.jar
 #COPY --from=build /usr/bin/google-chrome /usr/bin/google-chrome
 #COPY --from=build /opt/google/chrome /opt/google/chrome
 
