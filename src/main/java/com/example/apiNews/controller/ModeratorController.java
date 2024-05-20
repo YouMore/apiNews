@@ -1,12 +1,10 @@
 package com.example.apiNews.controller;
 import com.example.apiNews.model.entity.News;
 import com.example.apiNews.model.entity.Users;
-import com.example.apiNews.model.request.ChangeUserRole;
 import com.example.apiNews.model.response.NewsResponse;
 import com.example.apiNews.service.NewsService;
 import com.example.apiNews.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +68,7 @@ public class ModeratorController {
 
     @PutMapping("/news/reject/{id}")
     public ResponseEntity<NewsResponse> moderateRejectNews(@PathVariable Long id) {
-        News news = newsService.updateModerationStatus(id, null);
+        News news = newsService.updateModerationStatus(id, false);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

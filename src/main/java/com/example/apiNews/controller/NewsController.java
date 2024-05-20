@@ -1,10 +1,10 @@
 package com.example.apiNews.controller;
 
-import com.example.apiNews.dto.request.NewsDTO;
 import com.example.apiNews.model.entity.News;
 import com.example.apiNews.model.entity.Users;
 import com.example.apiNews.model.response.NewsResponse;
 import com.example.apiNews.service.NewsService;
+import com.example.apiNews.service.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,7 @@ public class NewsController {
 
     private final NewsService newsService;
     private final ModelMapper modelMapper;
+    private final UserService userService;
 
 //    @PostMapping("/create")
 //    public ResponseEntity<News> create(@RequestBody NewsDTO dto){
@@ -62,6 +63,11 @@ public class NewsController {
     @PutMapping()
     public ResponseEntity<News> update(@RequestBody News news){
         return new ResponseEntity<>(newsService.update(news), HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<List<News>> getAllNewsByUserId(@PathVariable Long id){
+        return ResponseEntity.ok(userService.getUserById(id).getNews());
     }
 
     @DeleteMapping("/{id}")
